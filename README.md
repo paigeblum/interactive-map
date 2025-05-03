@@ -74,3 +74,18 @@ You’ll see a map centered on NYU’s campus. Click a star to see each event’
 ## 🙋 Need Help?
 If you get stuck, feel free to reach out. The setup is designed to be beginner-friendly and only takes a few minutes.
 
+## 🧠 AI Prompting
+
+The following prompts were used to guide and co-develop the application using AI assistance:
+
+```
+1. Is there an API that generates a map based on a location address?
+2. Let's say I have a dictionary of events with corresponding address locations. I want to utilize a third party API to generate a map with these locations and make it interactive. Make an action plan.
+3. Give me a Node.js template for beginning this task.
+4. Attaches images of the app — adjust the UI to match the font, color, boxing, and feeling of the provided product images. Determine the font, size, and scale of the text and format the layout so it aligns accordingly. Make sure the project is cohesive with the product vision.
+5. Write a README for this project.
+```
+
+These prompts informed the backend logic, frontend interface, and UI/UX direction of the project.
+
+---
