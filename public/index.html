@@ -21,11 +21,12 @@
   <style>
     :root {
       --color-primary: #E6247A;
-      --color-text:    #333;
-      --font-header:   'Montserrat',sans-serif;
-      --font-body:     sans-serif;
-      --radius:        12px;
-      --shadow:        0 2px 8px rgba(0,0,0,0.1);
+      --color-secondary: #FCD6E0;
+      --color-text: #333;
+      --font-header: 'Montserrat', sans-serif;
+      --font-body: sans-serif;
+      --radius: 12px;
+      --shadow: 0 2px 8px rgba(0,0,0,0.1);
     }
     * { box-sizing: border-box; }
     body, html {
@@ -33,6 +34,7 @@
       height: 100%; width: 100%;
       font-family: var(--font-body);
       color: var(--color-text);
+      background: #fefefe;
     }
     .container { display: flex; height: 100%; }
 
@@ -44,6 +46,26 @@
       overflow-y: auto;
       padding: 20px;
     }
+
+    /* Logo */
+    #logo-header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 16px;
+    }
+    #logo-header img {
+      width: 36px;
+      height: 36px;
+      border-radius: 8px;
+    }
+    #logo-header span {
+      font-family: var(--font-header);
+      font-size: 1.1rem;
+      color: var(--color-primary);
+      font-weight: bold;
+    }
+
     /* Tabs */
     #tabs {
       display: flex;
@@ -58,11 +80,13 @@
       background: #f5f5f5;
       cursor: pointer;
       transition: background 0.2s, color 0.2s;
+      border-radius: var(--radius);
     }
     .tab-button.active {
       background: var(--color-primary);
       color: #fff;
     }
+
     /* Title */
     #list-title {
       margin: 0 0 16px;
@@ -77,11 +101,12 @@
       box-shadow: var(--shadow);
       margin-bottom: 16px;
       cursor: pointer;
-      transition: border 0.2s;
+      transition: border 0.2s, box-shadow 0.2s;
       border: 2px solid transparent;
     }
     .event-card.active {
       border-color: var(--color-primary);
+      box-shadow: 0 0 0 2px var(--color-secondary);
     }
     .event-card .card-content {
       padding: 12px 16px;
@@ -110,8 +135,8 @@
       margin-top: 8px;
     }
     .tag {
-      background: var(--color-primary);
-      color: #fff;
+      background: var(--color-secondary);
+      color: #000;
       padding: 2px 8px;
       border-radius: 8px;
       font-size: 0.75rem;
@@ -125,26 +150,25 @@
 <body>
   <div class="container">
     <div id="sidebar">
-      <!-- 1) Tabs -->
+      <div id="logo-header">
+        <img src="/logo.png" alt="Flamingo logo">
+        <span>Lynkr</span>
+      </div>
       <div id="tabs">
         <button class="tab-button active" data-type="your">Your Events</button>
-        <button class="tab-button"       data-type="upcoming">Public Events</button>
-        <button class="tab-button"       data-type="group">Group Events</button>
+        <button class="tab-button" data-type="upcoming">Public Events</button>
+        <button class="tab-button" data-type="group">Group Events</button>
       </div>
-      <!-- 2) List title -->
       <h1 id="list-title">Your Events</h1>
-      <!-- 3) Cards container -->
       <div id="cards-container"></div>
     </div>
     <div id="map"></div>
   </div>
 
   <script>
-    // 0) config
     mapboxgl.accessToken = "pk.eyJ1IjoicGJsdW0iLCJhIjoiY205dWlxdDd4MDl5MzJqb2I1enRhcHc0MSJ9._1rANaYTIUxYvHEMkakc4w";
     const userGroups = ['Music Lovers','Class of 2026'];
 
-    // 1) init map
     const map = new mapboxgl.Map({
       container: 'map',
       style:     'mapbox://styles/mapbox/streets-v11',
@@ -156,31 +180,29 @@
     let userMarker = null;
 
     map.on('load', () => {
-      // 2) fetch & store events
       fetch('/api/events')
         .then(r => { if (!r.ok) throw new Error(r.statusText); return r.json(); })
         .then(events => {
           allEvents = events;
-          // place markers & popups once
           allEvents.forEach(evt => {
             const popup = new mapboxgl.Popup({offset:25})
               .setHTML(`
-                <strong>${evt.name}</strong><br>
-                📅 ${new Date(evt.date).toLocaleString()}<br>
-                📍 ${evt.address}<br>
-                <em>${evt.privacy}</em> · <em>${evt.group}</em>
+                <div style="font-family: 'Montserrat', sans-serif; max-width: 200px;">
+                  <strong style="color: var(--color-primary);">${evt.name}</strong><br>
+                  📅 ${new Date(evt.date).toLocaleString()}<br>
+                  📍 ${evt.address}<br>
+                  <span style="background:#fcd6e0;padding:2px 6px;border-radius:6px;font-size:12px;">${evt.group}</span>
+                </div>
               `);
             new mapboxgl.Marker({color:'var(--color-primary)'})
               .setLngLat([evt.lon,evt.lat])
               .setPopup(popup)
               .addTo(map);
           });
-          // initial render
           renderList('your');
         })
         .catch(err => console.error('Error loading events:',err));
 
-      // 3) location watch
       if ('geolocation' in navigator) {
         navigator.geolocation.watchPosition(
           pos => {
@@ -198,7 +220,6 @@
         );
       }
 
-      // 4) tabs behavior
       document.querySelectorAll('.tab-button').forEach(btn => {
         btn.addEventListener('click', () => {
           document.querySelectorAll('.tab-button').forEach(b=>b.classList.remove('active'));
@@ -209,7 +230,6 @@
       });
     });
 
-    // 5) render function
     function renderList(type) {
       const container = document.getElementById('cards-container');
       container.innerHTML = '';
@@ -229,9 +249,9 @@
         card.innerHTML = `
           <div class="card-content">
             <p class="title">${evt.name}</p>
-            <p class="meta"><span class="icon">📅</span>${
-              new Date(evt.date).toLocaleDateString()} ${
-              new Date(evt.date).toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'})}
+            <p class="meta"><span class="icon">📅</span>$
+              {new Date(evt.date).toLocaleDateString()} $
+              {new Date(evt.date).toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'})}
             </p>
             <p class="meta"><span class="icon">📍</span>${evt.address}</p>
             <p class="meta"><span class="icon">👥</span>${evt.groupGoingCount} in your group going</p>
@@ -242,10 +262,8 @@
             </div>
           </div>
         `;
-        // click → fly + popup + highlight
         card.addEventListener('click', () => {
           map.flyTo({center:[evt.lon,evt.lat],zoom:15});
-          // open its popup
           new mapboxgl.Popup({offset:25})
             .setLngLat([evt.lon,evt.lat])
             .setHTML(`<strong>${evt.name}</strong>`)
