@@ -37,7 +37,7 @@ npm install
 
 This installs everything the app needs.
 
-### 5. Start the App
+### 4. Start the App
 In the same terminal, run:
 
 ```
@@ -49,7 +49,7 @@ You should see:
 Server running at http://localhost:3000
 ```
 
-### 6. Open the App
+### 5. Open the App
 Open your browser and go to:
 ```
 http://localhost:3000
