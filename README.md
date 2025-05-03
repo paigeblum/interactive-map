@@ -26,19 +26,7 @@ Go to [https://nodejs.org](https://nodejs.org) and download the **LTS version** 
 ### 2. Download This Project
 Click the green "Code" button above and select **"Download ZIP"**. Unzip the folder somewhere on your computer.
 
-### 3. Create a Free Mapbox Account
-- Visit [https://account.mapbox.com/](https://account.mapbox.com/)
-- Sign up and copy your **Access Token**
-- In the project folder, create a file called `.env`
-- Inside it, paste:
-
-```
-MAPBOX_TOKEN=your_actual_mapbox_token_here
-```
-
-Replace `your_actual_mapbox_token_here` with the one from Mapbox.
-
-### 4. Open Terminal in VS Code
+### 3. Open Terminal in VS Code
 Open the folder in [Visual Studio Code](https://code.visualstudio.com). Then:
 - Go to `Terminal > New Terminal`
 - In the terminal that opens at the bottom, run:
